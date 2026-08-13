@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Starts one bar per connected output, see config.ini for which bar goes where.
+
+set -Eeuo pipefail
+
+# Export the machine identifiers so the ini files and the scripts share them, see machine.env.
+set -a
+# shellcheck source=machine.env
+. "$HOME/.config/polybar/machine.env"
+set +a
+
+# Terminate already running bar instances, ignore the error when none run.
+/usr/bin/polybar-msg cmd quit 2>/dev/null || true
+
+# Wait until they are gone.
+while pgrep -u "$UID" -x polybar >/dev/null; do sleep 0.2; done
+
+monitors=$(/usr/bin/polybar -m | cut -d ":" -f1)
+
+# An eDP* output is the internal panel. Anything else is external.
+externals=$(printf '%s\n' "$monitors" | grep -v '^eDP' || true)
+
+for monitor in $monitors; do
+    case "$monitor" in
+        # The internal panel runs the full bar alone, the reduced one next to an external screen.
+        eDP*)
+            if [ -n "$externals" ]; then bar=secondary; else bar=laptop; fi
+            ;;
+        *)
+            bar=main
+            ;;
+    esac
+    MONITOR=$monitor /usr/bin/polybar -r -q "$bar" &
+    disown
+done

@@ -1,0 +1,98 @@
+/**
+ * Theme for every menu the bar opens: wifi, audio devices, power.
+ * The wrapper in scripts/rofi.sh only overrides width and line count.
+ */
+
+configuration {
+    modi: "dmenu";
+    show-icons: false;
+}
+
+* {
+    // Same family as the bar, so the repository needs one font only.
+    font: "Hack Nerd Font Propo 10";
+
+    background: #060B15BB;
+    foreground: #FFFFFFFF;
+    selected: #61AFEFFF;
+    dimmed: #5C6370FF;
+}
+
+window {
+    // Dropped under the bar on the right, where the modules that open it sit.
+    location: northeast;
+    anchor: northeast;
+    x-offset: -18px;
+    y-offset: 80px;
+    width: 500px;
+
+    transparency: "real";
+    border-radius: 10px;
+    background-color: @background;
+    cursor: "default";
+}
+
+mainbox {
+    spacing: 15px;
+    padding: 20px;
+    background-color: transparent;
+    children: [ "inputbar", "listview" ];
+}
+
+inputbar {
+    spacing: 10px;
+    background-color: transparent;
+    text-color: @foreground;
+    children: [ "prompt", "entry" ];
+}
+
+prompt {
+    background-color: inherit;
+    text-color: inherit;
+}
+
+entry {
+    background-color: inherit;
+    text-color: inherit;
+    cursor: text;
+    placeholder: "Filtrer...";
+    placeholder-color: @dimmed;
+}
+
+listview {
+    columns: 1;
+    lines: 10;
+    cycle: true;
+    dynamic: true;
+    scrollbar: false;
+    layout: vertical;
+    // Lets the window shrink to the list instead of padding it out.
+    fixed-height: false;
+
+    spacing: 6px;
+    background-color: transparent;
+    text-color: @foreground;
+    cursor: "default";
+}
+
+element {
+    spacing: 10px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background-color: transparent;
+    text-color: @foreground;
+    cursor: pointer;
+}
+
+element selected.normal {
+    background-color: @selected;
+    text-color: @background;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    highlight: inherit;
+    cursor: inherit;
+    vertical-align: 0.5;
+}
