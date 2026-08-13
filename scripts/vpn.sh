@@ -7,7 +7,6 @@
 
 set -eu
 
-# shellcheck source=machine.env
 . "${XDG_CONFIG_HOME:-$HOME/.config}/polybar/machine.env"
 
 TOGGLE=0
@@ -40,7 +39,6 @@ fi
 
 address_of() {
     [ -n "$1" ] || return 0
-    # shellcheck disable=SC2046  # splitting the fields is the point
     set -- $(ip -4 -o addr show "$1" 2>/dev/null)
     # An if, not a && chain: the chain returns 1 with no address, and set -e then
     # kills the caller before it prints the disconnected state.

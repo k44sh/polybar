@@ -6,7 +6,6 @@ set -Eeuo pipefail
 
 # Export the machine identifiers so the ini files and the scripts share them, see machine.env.
 set -a
-# shellcheck source=machine.env
 . "$HOME/.config/polybar/machine.env"
 set +a
 

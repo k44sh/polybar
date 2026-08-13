@@ -6,7 +6,6 @@
 set -eu
 
 # Machine identifiers, shared with the ini files.
-# shellcheck source=machine.env
 . "${XDG_CONFIG_HOME:-$HOME/.config}/polybar/machine.env"
 
 STATE="${XDG_RUNTIME_DIR:-/tmp}/polybar-cpu"

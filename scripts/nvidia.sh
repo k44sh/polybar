@@ -18,7 +18,6 @@ reading=$(timeout "$QUERY_TIMEOUT" nvidia-smi \
     --format=csv,noheader,nounits 2>/dev/null) || exit 0
 # Split in place: a here-document or a pipe would each cost a process.
 IFS=', '
-# shellcheck disable=SC2086  # word splitting on IFS is the point here
 set -- $reading
 IFS=' '
 [ $# -ge 5 ] || exit 0
