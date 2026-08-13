@@ -22,8 +22,8 @@ NM_TIMEOUT=10
 MAX_GAP=10
 UP_COLOR=98C379
 DOWN_COLOR=D19A66
-ICON_UP="󱠽"
-ICON_DOWN="󱠾"
+ICON_UP="󰌾"
+ICON_DOWN="󱙱"
 
 # The device is asked to NetworkManager rather than derived from the profile
 # name: a tunnel device only exists while up, and OpenVPN names it at runtime.
@@ -40,11 +40,13 @@ fi
 
 address_of() {
     [ -n "$1" ] || return 0
-    # Field 4 of the one-line form is the address with its prefix. Splitting
-    # in place avoids the awk a pipe would need.
-    # shellcheck disable=SC2046  # word splitting on the fields is the point here
+    # shellcheck disable=SC2046  # splitting the fields is the point
     set -- $(ip -4 -o addr show "$1" 2>/dev/null)
-    [ $# -ge 4 ] && printf '%s' "${4%%/*}"
+    # An if, not a && chain: the chain returns 1 with no address, and set -e then
+    # kills the caller before it prints the disconnected state.
+    if [ $# -ge 4 ]; then
+        printf '%s' "${4%%/*}"
+    fi
 }
 
 iface="" prev_rx="" prev_tx="" prev_time=""
@@ -80,7 +82,6 @@ tx_rate=$(((tx - ${prev_tx:-$tx}) / elapsed))
 [ "$tx_rate" -ge 0 ] || tx_rate=0
 
 # Bytes, like the internal network modules, which polybar cannot switch to bits.
-# Both rates in one awk call rather than two.
 rates=$(awk -v r="$rx_rate" -v t="$tx_rate" 'function h(b) {
     if (b >= 1048576) return sprintf("%.1f MB/s", b/1048576)
     if (b >= 1024)    return sprintf("%.0f KB/s", b/1024)
